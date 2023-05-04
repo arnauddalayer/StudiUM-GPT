@@ -1,0 +1,42 @@
+<p>
+    <b>Contenu ChatGPT : </b><br />
+    <span class="gptresponse">&nbsp;</span>
+</p>
+<script type="text/javascript">
+//https://stackoverflow.com/questions/8298430/handling-code-which-relies-on-jquery-before-jquery-is-loaded
+if ( ! window.deferAfterjQueryLoaded ) {
+    window.deferAfterjQueryLoaded = [];
+    Object.defineProperty(window, "$", {
+        set: function(value) {
+            window.setTimeout(function() {
+            $.each(window.deferAfterjQueryLoaded, function(index, fn) {
+                fn();
+            });
+            }, 0);
+            Object.defineProperty(window, "$", { value: value });
+        },
+        configurable: true
+    });
+}
+
+window.deferAfterjQueryLoaded.push(function() {
+    $.ajax({
+        url: "http://localhost:8111/",
+        timeout: 10000, // temps en millisecondes
+        success: function(data) {
+        // traitement de la réponse
+        var items = [];
+        $.each( data, function( key, val ) {
+            items.push( "<li id='" + key + "'>" + val + "</li>" );
+        });
+        $( "<ul/>", {
+            "class": "my-new-list",
+            html: items.join( "" )
+        }).appendTo( ".gptresponse" );
+    },
+        error: function(jqXHR, textStatus, errorThrown) {
+        // traitement de l'erreur
+    }
+    });
+});
+</script>
